@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FilesMapper">
+
+    <resultMap type="Files" id="FilesResult">
+        <result property="id"    column="id"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="uploadFilesName"    column="upload_files_name"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectFilesVo">
+        select id, file_name, upload_files_name, type from files
+    </sql>
+
+    <select id="selectFilesList" parameterType="Files" resultMap="FilesResult">
+        <include refid="selectFilesVo"/>
+        <where>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="uploadFilesName != null  and uploadFilesName != ''"> and upload_files_name like concat('%', #{uploadFilesName}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+        </where>
+    </select>
+
+    <select id="selectFilesById" parameterType="Long" resultMap="FilesResult">
+        <include refid="selectFilesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFiles" parameterType="Files" useGeneratedKeys="true" keyProperty="id">
+        insert into files
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="uploadFilesName != null">upload_files_name,</if>
+            <if test="type != null">type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="uploadFilesName != null">#{uploadFilesName},</if>
+            <if test="type != null">#{type},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFiles" parameterType="Files">
+        update files
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="uploadFilesName != null">upload_files_name = #{uploadFilesName},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFilesById" parameterType="Long">
+        delete from files where id = #{id}
+    </delete>
+
+    <delete id="deleteFilesByIds" parameterType="String">
+        delete from files where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
