@@ -9,10 +9,11 @@
         <result property="fileName"    column="file_name"    />
         <result property="uploadFilesName"    column="upload_files_name"    />
         <result property="type"    column="type"    />
+        <result property="uploadTime"    column="upload_time"    />
     </resultMap>
 
     <sql id="selectFilesVo">
-        select id, file_name, upload_files_name, type from files
+        select id, file_name, upload_files_name, type, upload_time from files
     </sql>
 
     <select id="selectFilesList" parameterType="Files" resultMap="FilesResult">
@@ -21,6 +22,7 @@
             <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
             <if test="uploadFilesName != null  and uploadFilesName != ''"> and upload_files_name like concat('%', #{uploadFilesName}, '%')</if>
             <if test="type != null "> and type = #{type}</if>
+            <if test="uploadTime != null "> and upload_time = #{uploadTime}</if>
         </where>
     </select>
 
@@ -35,11 +37,13 @@
             <if test="fileName != null and fileName != ''">file_name,</if>
             <if test="uploadFilesName != null">upload_files_name,</if>
             <if test="type != null">type,</if>
+            <if test="uploadTime != null">upload_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fileName != null and fileName != ''">#{fileName},</if>
             <if test="uploadFilesName != null">#{uploadFilesName},</if>
             <if test="type != null">#{type},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
         </trim>
     </insert>
 
@@ -49,6 +53,7 @@
             <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
             <if test="uploadFilesName != null">upload_files_name = #{uploadFilesName},</if>
             <if test="type != null">type = #{type},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
         </trim>
         where id = #{id}
     </update>
